@@ -1,64 +1,40 @@
-from logic import Symbol, And, Or, Not, model_check
+import check50
+from logic import Symbol, And, model_check
+from knights import AKnight, AKnave, BKnight, BKnave, CKnight, CKnave, knowledge0, knowledge1, knowledge2, knowledge3
 
-# Defining symbols for each character's type
-AKnight = Symbol("A is a Knight")
-AKnave = Symbol("A is a Knave")
-BKnight = Symbol("B is a Knight")
-BKnave = Symbol("B is a Knave")
-CKnight = Symbol("C is a Knight")
-CKnave = Symbol("C is a Knave")
+@check50.check()
+def exists():
+    "knights.py exists"
+    check50.exists("knights.py")
 
-# Each character must be either a knight or a knave, but not both
-base_rules = And(
-    Or(AKnight, AKnave), Not(And(AKnight, AKnave)),
-    Or(BKnight, BKnave), Not(And(BKnight, BKnave)),
-    Or(CKnight, CKnave), Not(And(CKnight, CKnave))
-)
+@check50.check(exists)
+def test_puzzle0():
+    "Puzzle 0 correctly identifies A as a knave"
+    assert model_check(knowledge0, AKnave), "A should be a knave in Puzzle 0"
+    assert not model_check(knowledge0, AKnight), "A should not be a knight in Puzzle 0"
 
-# Puzzle 0: A says "I am both a knight and a knave."
-knowledge0 = And(
-    base_rules,
-    AKnave  # Since the statement is false, A must be a knave
-)
+@check50.check(exists)
+def test_puzzle1():
+    "Puzzle 1 correctly identifies A as a knave and B as a knight"
+    assert model_check(knowledge1, AKnave), "A should be a knave in Puzzle 1"
+    assert model_check(knowledge1, BKnight), "B should be a knight in Puzzle 1"
+    assert not model_check(knowledge1, AKnight), "A should not be a knight in Puzzle 1"
+    assert not model_check(knowledge1, BKnave), "B should not be a knave in Puzzle 1"
 
-# Puzzle 1: A says "We are both knaves."
-knowledge1 = And(
-    base_rules,
-    AKnave,  # A must be a knave because the statement is false
-    BKnight  # Since the statement "We are both knaves" is false, B must be a knight
-)
+@check50.check(exists)
+def test_puzzle2():
+    "Puzzle 2 correctly identifies A as a knave and B as a knight"
+    assert model_check(knowledge2, AKnave), "A should be a knave in Puzzle 2"
+    assert model_check(knowledge2, BKnight), "B should be a knight in Puzzle 2"
+    assert not model_check(knowledge2, AKnight), "A should not be a knight in Puzzle 2"
+    assert not model_check(knowledge2, BKnave), "B should not be a knave in Puzzle 2"
 
-# Puzzle 2: A says "We are the same kind." B says "We are of different kinds."
-knowledge2 = And(
-    base_rules,
-    AKnave,  # A must be a knave, meaning the statement "We are the same kind" is false
-    BKnight  # If they are different, and A is a knave, then B must be a knight
-)
-
-# Puzzle 3:
-knowledge3 = And(
-    base_rules,
-    AKnight,  # A must be a knight, since C (a truthful knight) says so
-    BKnave,   # B is a knave since he lied about A's statement
-    CKnight   # C is a knight, since B falsely claimed otherwise
-)
-
-def main():
-    symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave]
-    puzzles = [
-        ("Puzzle 0", knowledge0),
-        ("Puzzle 1", knowledge1),
-        ("Puzzle 2", knowledge2),
-        ("Puzzle 3", knowledge3)
-    ]
-    for puzzle, knowledge in puzzles:
-        print(puzzle)
-        if len(knowledge.conjuncts) == 0:
-            print("    Not yet implemented.")
-        else:
-            for symbol in symbols:
-                if model_check(knowledge, symbol):
-                    print(f"    {symbol}")
-
-if __name__ == "__main__":
-    main()
+@check50.check(exists)
+def test_puzzle3():
+    "Puzzle 3 correctly identifies A as a knight, B as a knave, and C as a knight"
+    assert model_check(knowledge3, AKnight), "A should be a knight in Puzzle 3"
+    assert model_check(knowledge3, BKnave), "B should be a knave in Puzzle 3"
+    assert model_check(knowledge3, CKnight), "C should be a knight in Puzzle 3"
+    assert not model_check(knowledge3, AKnave), "A should not be a knave in Puzzle 3"
+    assert not model_check(knowledge3, BKnight), "B should not be a knight in Puzzle 3"
+    assert not model_check(knowledge3, CKnave), "C should not be a knave in Puzzle 3"
