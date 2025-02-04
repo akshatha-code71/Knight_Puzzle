@@ -21,7 +21,7 @@ def test_puzzle1():
     assert not model_check(knowledge1, AKnight), "A should not be a knight in Puzzle 1"
     assert not model_check(knowledge1, BKnave), "B should not be a knave in Puzzle 1"
 
-@check50.check(exists)
+@gitcheck50.check(exists)
 def test_puzzle2():
     "Puzzle 2 correctly identifies A as a knave and B as a knight"
     assert model_check(knowledge2, AKnave), "A should be a knave in Puzzle 2"
